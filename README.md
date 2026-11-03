@@ -52,7 +52,6 @@ In total the dataset has 5000 episodes and 20000 videos.
 - [cameras.json](#camerasjson)
 - [Splits](#splits)
 - [Loading example](#loading-example)
-- [Evaluation](#evaluation)
 - [License](#license)
 - [Acknowledgements and third-party assets](#acknowledgements-and-third-party-assets)
 - [Citation](#citation)
@@ -257,19 +256,6 @@ for row in labels[labels.episode_id == ep.episode_id].itertuples():
     visible = frames[: row.frame + 1]  # frames a model may use for this decision
 ```
 
-## Evaluation
-
-Evaluate each task separately on the test split and ignore the rows of `labels.csv` with label -1. A method gives
-a score for each remaining row, using only frames 0 to `frame` of that episode.
-
-- **Miss rate** at each decision time: the fraction of rows with label 1 that are predicted 0 at a chosen score
-  threshold.
-- **False-alarm rate** at each decision time: the fraction of rows with label 0 that are predicted 1 at the same
-  threshold.
-- **Average precision** of the score over the rows of all decision times.
-
-Choose the threshold without using the test split, for example on val, and report it with the rates.
-
 ## License
 
 MCWS is released under the Creative Commons Attribution 4.0 International License (CC BY 4.0). See `LICENSE`.
@@ -300,4 +286,4 @@ The videos were rendered with Gazebo (gz-sim). The dataset contains rendered vid
 
 ## Contact
 
-For questions and issues, please open an issue at https://github.com/cylinomc/MCWS/issues.
+For questions, please contact Chih-Yu Lin (wowlilo29@gmail.com) or open an issue at https://github.com/cylinomc/MCWS/issues.
