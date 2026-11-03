@@ -28,9 +28,9 @@ view are known. The dataset has 3 tasks:
 - `intrusion`: A person walks near a hazardous zone on a corridor, close to the point where a cross aisle meets the corridor.
 - `dropped_box`: A box sits on a high shelf next to the lane of a mobile robot and, if it falls, falls into the lane.
 
-Each task has one target event. Every episode comes with `target_event` (1 if the target event occurs in the
-episode), a scene category, and labels on 31 frames that say whether the target event happens within 4 s
-of the frame.
+Each task has one target event. Every episode comes with `has_event` (1 if the target event occurs in the
+episode), `event_frame` (the frame at which it happens), a scene category, and an example label for every
+frame, `risk_4s`.
 
 In total the dataset has 5000 episodes and 20000 videos.
 
@@ -60,8 +60,8 @@ The videos (about 14 GB) will be available for download soon. This repository ho
 | Intrusion | The person entering the hazardous zone | `enter_zone`, `divert_or_stop`, `pass_close`, `turn_back`, `stays_clear` | 1750 | [docs/tasks/intrusion.md](docs/tasks/intrusion.md) |
 | Dropped box | The box falling onto the robot | `fall_on_robot`, `fall_robot_clear`, `wobble_no_fall`, `static_box` | 2000 | [docs/tasks/dropped_box.md](docs/tasks/dropped_box.md) |
 
-The first category of each task is the one with the target event (`target_event` = 1). Each task page shows the
-categories, the episodes per split and the labeling rule.
+The first category of each task is the one with the target event (`has_event` = 1). Each task page shows the
+categories, the episodes per split, the moment of the target event and the labeling rule.
 
 ## Data format
 
@@ -101,26 +101,32 @@ One row per episode.
 | --- | --- |
 | `episode_id` | For example `collision_0001`; the videos are in `videos/<episode_id>/` |
 | `split` | `train`, `val` or `test` |
-| `target_event` | 1 if the target event occurs in the episode, 0 otherwise |
+| `has_event` | 1 if the target event occurs in the episode, 0 otherwise |
 | `category` | Scene category, see [Tasks and categories](#tasks-and-categories) |
+| `event_frame` | Index (0-based) of the first frame at or after the moment of the target event; empty if `has_event` is 0 |
+
+The moment of the target event of each task is defined on its page in [docs/tasks](docs/tasks).
 
 ### Labels (`labels.csv`)
 
-One row per labeled frame. Each episode has 31 labeled frames: 119, 121, ..., 179 (every 0.1 s).
+One row per frame: 300 rows per episode, frames 0 to 299.
 
 | Column | Description |
 | --- | --- |
 | `episode_id` | The episode, as in `episodes.csv` |
 | `frame` | Frame index (0-based) |
-| `time_s` | Time of the frame in seconds, `frame / 20` |
-| `label` | 1, 0 or -1, see below |
+| `risk_4s` | 1, 0 or -1, see below |
 
-- `1`: The target event happens within 4 s of this frame under the labeling rule of the task.
+`risk_4s` is a provided example label:
+
+- `1`: Extrapolating the current motion, the target event happens within 4 s.
 - `0`: It does not, with a safety margin.
-- `-1`: Ambiguous (no label).
+- `-1`: Ambiguous, or not available for this frame (a few frames at the start or end of an episode, see the task
+  pages).
 
-A frame label can be 1 in an episode whose `target_event` is 0. The labeling rule of each task is on its page in
-[docs/tasks](docs/tasks).
+The exact rule of each task is on its page in [docs/tasks](docs/tasks). A frame label can be 1 in an episode whose
+`has_event` is 0. Other targets, for example whether the event happens within a chosen number of frames, can be
+derived from `event_frame`.
 
 ### Cameras (`cameras.json`)
 
@@ -136,8 +142,8 @@ focal length in pixels is f = (width / 2) / tan(horizontal_fov / 2).
 ### Splits
 
 `splits/train.txt`, `splits/val.txt` and `splits/test.txt` list episodes as `<task>/<episode_id>`, for example
-`collision/collision_0001`. Episodes that share a scene setup (agent speeds, timing and background motion) are
-always in the same split, so please use the splits as given.
+`collision/collision_0001`. Episodes that share a scene setup (agent speeds, timing and background motion) are always in
+the same split; the splits hold 70, 10 and 20 % of the scene setups of each task. Please use the splits as given.
 
 ## Getting started
 
@@ -151,8 +157,10 @@ episodes = pd.read_csv(f"{root}/{task}/episodes.csv")
 labels = pd.read_csv(f"{root}/{task}/labels.csv")
 cameras = json.load(open(f"{root}/{task}/cameras.json"))["cameras"]
 
-ep = episodes.iloc[0]
-ep_labels = labels[labels.episode_id == ep.episode_id]  # the labeled frames of this episode
+ep = episodes[episodes.has_event == 1].iloc[0]
+print(ep.episode_id, ep.category, int(ep.event_frame))  # frame at which the target event happens
+risk = labels[labels.episode_id == ep.episode_id].risk_4s.to_numpy()  # 300 values, one per frame
+
 cap = cv2.VideoCapture(f"{root}/{task}/videos/{ep.episode_id}/cam0.mp4")
 frames = []
 while True:
