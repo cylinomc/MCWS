@@ -53,7 +53,6 @@ In total the dataset has 5000 episodes and 20000 videos.
 - [Splits](#splits)
 - [Loading example](#loading-example)
 - [Evaluation](#evaluation)
-- [Limitations](#limitations)
 - [License](#license)
 - [Acknowledgements and third-party assets](#acknowledgements-and-third-party-assets)
 - [Citation](#citation)
@@ -270,15 +269,6 @@ a score for each remaining row, using only frames 0 to `frame` of that episode.
 - **Average precision** of the score over the rows of all decision times.
 
 Choose the threshold without using the test split, for example on val, and report it with the rates.
-
-## Limitations
-
-- The videos are synthetic Gazebo renders. Appearance, lighting and motion are simplified compared with real
-  warehouses.
-- Each task uses one warehouse layout with four fixed cameras.
-- The behaviour of people and robots is scripted.
-- Labels come from simulator ground truth and a constant-velocity prediction, not from human annotation.
-- Models trained on MCWS may not transfer to real cameras without adaptation (sim-to-real gap).
 
 ## License
 
