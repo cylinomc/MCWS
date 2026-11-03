@@ -20,18 +20,17 @@
 | Size | about 14 GB |
 | License | CC BY 4.0 |
 
-MCWS is a synthetic video dataset for anticipating safety events in a warehouse. Each episode is a 15 s scene
-rendered in a simulated warehouse with Gazebo and recorded by four static cameras whose positions, orientations
-and fields of view are known. The dataset has three tasks:
+MCWS is a synthetic video dataset of safety events in a warehouse. Each episode is a 15 s scene rendered in a
+simulated warehouse with Gazebo and recorded by four static cameras whose positions, orientations and fields of
+view are known. The dataset has 3 tasks:
 
-- `collision`: two agents (two mobile robots, or a mobile robot and a person) on crossing paths.
-- `intrusion`: a person walks near a hazardous zone.
-- `dropped_box`: a box on a high shelf next to the lane of a mobile robot.
+- `collision`: Two agents, either two mobile robots or a mobile robot and a person, are on crossing paths.
+- `intrusion`: A person walks near a hazardous zone on a corridor, close to the point where a cross aisle meets the corridor.
+- `dropped_box`: A box sits on a high shelf next to the lane of a mobile robot and, if it falls, falls into the lane.
 
-Every episode comes with `target_event` (1 if the task's target event occurs in the episode), a scene category,
-and per-time labels at 31 decision times that say whether the target event is predicted within the next 4 s. The
-target event is a collision between the two agents (`collision`), the person entering the hazardous zone
-(`intrusion`), or the box falling onto the robot (`dropped_box`).
+Each task has one target event. Every episode comes with `target_event` (1 if the target event occurs in the
+episode), a scene category, and labels on 31 frames that say whether the target event happens within 4 s
+of the frame.
 
 In total the dataset has 5000 episodes and 20000 videos.
 
@@ -43,58 +42,30 @@ In total the dataset has 5000 episodes and 20000 videos.
 ## Contents
 
 - [Download](#download)
-- [Episodes per task, category and split](#episodes-per-task-category-and-split)
-- [Videos](#videos)
-- [Folder layout](#folder-layout)
-- [episodes.csv](#episodescsv)
-- [labels.csv](#labelscsv)
 - [Tasks and categories](#tasks-and-categories)
-- [cameras.json](#camerasjson)
-- [Splits](#splits)
-- [Loading example](#loading-example)
-- [License](#license)
-- [Acknowledgements and third-party assets](#acknowledgements-and-third-party-assets)
-- [Citation](#citation)
-- [Contact](#contact)
+- [Data format](#data-format)
+- [Getting started](#getting-started)
+- [License and acknowledgements](#license-and-acknowledgements)
+- [Citation and contact](#citation-and-contact)
 
 ## Download
 
 The videos (about 14 GB) will be available for download soon. This repository holds the documentation.
 
-## Episodes per task, category and split
+## Tasks and categories
 
-### collision
+| Task | Target event | Categories | Episodes | Details |
+| --- | --- | --- | ---: | --- |
+| Collision | A collision between the two agents | `collision`, `close_pass`, `wide_pass`, `pass_stationary` | 1250 | [docs/tasks/collision.md](docs/tasks/collision.md) |
+| Intrusion | The person entering the hazardous zone | `enter_zone`, `divert_or_stop`, `pass_close`, `turn_back`, `stays_clear` | 1750 | [docs/tasks/intrusion.md](docs/tasks/intrusion.md) |
+| Dropped box | The box falling onto the robot | `fall_on_robot`, `fall_robot_clear`, `wobble_no_fall`, `static_box` | 2000 | [docs/tasks/dropped_box.md](docs/tasks/dropped_box.md) |
 
-| category | target_event | train | val | test | total |
-| --- | --- | ---: | ---: | ---: | ---: |
-| `collision` | 1 | 250 | 150 | 100 | 500 |
-| `close_pass` | 0 | 125 | 75 | 50 | 250 |
-| `wide_pass` | 0 | 125 | 75 | 50 | 250 |
-| `pass_stationary` | 0 | 125 | 75 | 50 | 250 |
-| **total** |  | 625 | 375 | 250 | 1250 |
+The first category of each task is the one with the target event (`target_event` = 1). Each task page shows the
+categories, the episodes per split and the labeling rule.
 
-### intrusion
+## Data format
 
-| category | target_event | train | val | test | total |
-| --- | --- | ---: | ---: | ---: | ---: |
-| `enter_zone` | 1 | 250 | 150 | 100 | 500 |
-| `divert_or_stop` | 0 | 125 | 75 | 50 | 250 |
-| `pass_close` | 0 | 125 | 75 | 50 | 250 |
-| `turn_back` | 0 | 125 | 75 | 50 | 250 |
-| `stays_clear` | 0 | 250 | 150 | 100 | 500 |
-| **total** |  | 875 | 525 | 350 | 1750 |
-
-### dropped_box
-
-| category | target_event | train | val | test | total |
-| --- | --- | ---: | ---: | ---: | ---: |
-| `fall_on_robot` | 1 | 250 | 150 | 100 | 500 |
-| `fall_robot_clear` | 0 | 250 | 150 | 100 | 500 |
-| `wobble_no_fall` | 0 | 250 | 150 | 100 | 500 |
-| `static_box` | 0 | 250 | 150 | 100 | 500 |
-| **total** |  | 1000 | 600 | 400 | 2000 |
-
-## Videos
+### Videos
 
 - Four cameras per episode, `cam0` to `cam3`. Their placement is the same for every episode of a task and is
   given in the task's `cameras.json`.
@@ -103,133 +74,72 @@ The videos (about 14 GB) will be available for download soon. This repository ho
 - Each scene also contains background people or robots moving elsewhere in the warehouse. The labels concern only
   the agents described for each task.
 
-## Folder layout
+### Folder layout
 
 ```
 MCWS/
   README.md
   LICENSE
-  checksums.sha256          SHA-256 of every other file (sha256sum format)
   docs/
-    annotation.md           exact rules behind the per-time labels
-  collision/
+    tasks/<task>.md         categories, episodes per split and labeling rule of each task
+  <task>/                   one folder per task: collision, intrusion, dropped_box
     cameras.json
     episodes.csv
     labels.csv
     videos/<episode_id>/cam0.mp4 ... cam3.mp4
-  intrusion/                same layout
-  dropped_box/              same layout
   splits/
     train.txt
     val.txt
     test.txt
 ```
 
-## episodes.csv
+### Episode list (`episodes.csv`)
 
 One row per episode.
 
-| column | meaning |
+| Column | Description |
 | --- | --- |
-| `episode_id` | for example `collision_0001`; the videos are in `videos/<episode_id>/` |
+| `episode_id` | For example `collision_0001`; the videos are in `videos/<episode_id>/` |
 | `split` | `train`, `val` or `test` |
 | `target_event` | 1 if the target event occurs in the episode, 0 otherwise |
-| `category` | scene category, see [Tasks and categories](#tasks-and-categories) |
+| `category` | Scene category, see [Tasks and categories](#tasks-and-categories) |
 
-## labels.csv
+### Labels (`labels.csv`)
 
-One row per episode and decision time: 31 rows per episode, at decision times 5.95 s to 8.95 s in steps of 0.1 s
-(frames 119, 121, ..., 179).
+One row per labeled frame. Each episode has 31 labeled frames: 119, 121, ..., 179 (every 0.1 s).
 
-| column | meaning |
+| Column | Description |
 | --- | --- |
-| `episode_id` | the episode, as in `episodes.csv` |
-| `frame` | decision frame: the last frame a model may use for this decision (frames 0 to `frame`) |
-| `time_s` | time of the decision frame in seconds, `frame / 20` |
-| `label` | whether the target event is predicted within the next 4 s: 1, 0 or -1 |
+| `episode_id` | The episode, as in `episodes.csv` |
+| `frame` | Frame index (0-based) |
+| `time_s` | Time of the frame in seconds, `frame / 20` |
+| `label` | 1, 0 or -1, see below |
 
-- `1`: the target event is predicted within the next 4 s if every agent keeps its current velocity.
-- `0`: the target event is not predicted, with a safety margin.
-- `-1`: a boundary case between the two. Ignore these rows in training and evaluation.
+- `1`: The target event happens within 4 s of this frame under the labeling rule of the task.
+- `0`: It does not, with a safety margin.
+- `-1`: Ambiguous (no label).
 
-The exact rules are in [docs/annotation.md](docs/annotation.md).
+A frame label can be 1 in an episode whose `target_event` is 0. The labeling rule of each task is on its page in
+[docs/tasks](docs/tasks).
 
-Per-time labels describe what can be predicted at that moment, not the final outcome, so they can be 1 in an
-episode whose `target_event` is 0. A person walking straight at the zone is labeled 1 until the turn away shows in their
-velocity, and a creeping box is labeled 1 while a robot is heading into its fall area, even if the box never falls.
-
-## Tasks and categories
-
-### collision
-
-<img src="assets/collision_categories.jpg" width="100%">
-
-Two agents, either two mobile robots or a mobile robot and a person, are on crossing paths.
-
-**Target event:** a collision between the two agents.
-
-| category | target_event | what happens |
-| --- | --- | --- |
-| `collision` | 1 | The two agents touch. In half of these episodes one robot starts from rest 1 to 5 s before the contact. |
-| `close_pass` | 0 | Both agents move and pass each other with a closest gap of 0.30 to 1.00 m. |
-| `wide_pass` | 0 | Both agents move and pass each other with a closest gap of 1.25 to 2.50 m. |
-| `pass_stationary` | 0 | A robot stays still a short distance before the crossing point for the whole episode, and the other agent passes it with a closest gap of 0.7 to 2.5 m. |
-
-**Per-time label:** 1 if the two agents would touch within the next 4 s at their current velocities ([details](docs/annotation.md#collision)).
-
-### intrusion
-
-<img src="assets/intrusion_categories.jpg" width="100%">
-
-A person walks near a hazardous zone on a corridor, close to the point where a cross aisle meets the corridor.
-
-**Target event:** the person entering the hazardous zone.
-
-| category | target_event | what happens |
-| --- | --- | --- |
-| `enter_zone` | 1 | The person walks into the zone, either straight along the corridor or by turning in from the cross aisle. |
-| `divert_or_stop` | 0 | The person walks along the corridor toward the zone, then turns into the cross aisle before reaching it, or slows down and stops 1 to 3 m short of it. |
-| `pass_close` | 0 | The person walks toward the zone, comes within about 1 m of its edge, then veers away. |
-| `turn_back` | 0 | The person walks toward the zone, then turns around and walks back the way they came. |
-| `stays_clear` | 0 | The person never heads into the zone: they walk down the cross aisle and stop in the corridor about 1 m from the zone, or wait in the corridor and then walk away from the zone. |
-
-**Per-time label:** 1 if the person would reach the zone within the next 4 s at their current velocity ([details](docs/annotation.md#intrusion)).
-
-### dropped_box
-
-<img src="assets/dropped_box_categories.jpg" width="100%">
-
-A box sits on a high shelf next to the lane of a mobile robot and, if it falls, falls into the lane.
-
-**Target event:** the box falling onto the robot.
-
-| category | target_event | what happens |
-| --- | --- | --- |
-| `fall_on_robot` | 1 | The box creeps and rocks, then falls into the lane onto the robot, which is driving past or has stopped in front of the shelf. |
-| `fall_robot_clear` | 0 | The box creeps, rocks and falls into the lane, but the robot stays out of the fall area: it drives in a lane farther from the shelf, moves over to that lane, or slows down and stops before the area. |
-| `wobble_no_fall` | 0 | The box creeps and rocks but stays on the shelf while the robot drives past or stops in front of the shelf. |
-| `static_box` | 0 | The box never moves while the robot drives past or stops in front of the shelf. |
-
-**Per-time label:** 1 if the box is unstable and the robot would reach its fall area within the next 4 s at its current velocity ([details](docs/annotation.md#dropped_box)).
-
-## cameras.json
+### Cameras (`cameras.json`)
 
 One file per task with the four cameras: `id`, `position_m` (x, y, z), `yaw_rad`, `pitch_rad`, `roll_rad`,
-`horizontal_fov_deg`, `resolution` (width, height) and `fps`. Positions and orientations are in the world frame
-described in [docs/annotation.md](docs/annotation.md).
+`horizontal_fov_deg`, `resolution` (width, height) and `fps`. Positions are in metres in the world frame of the
+task (right-handed, z up, floor at z = 0); the task pages use the same frame.
 
 The camera looks along its own +x axis, with +y to the left and +z up in the image. Its orientation in the world
 is the rotation R = Rz(yaw) Ry(pitch) Rx(roll), so a positive pitch tilts the camera down. The cameras are ideal
 pinhole cameras without lens distortion, with square pixels and the principal point at the image centre; the
 focal length in pixels is f = (width / 2) / tan(horizontal_fov / 2).
 
-## Splits
+### Splits
 
 `splits/train.txt`, `splits/val.txt` and `splits/test.txt` list episodes as `<task>/<episode_id>`, for example
 `collision/collision_0001`. Episodes that share a scene setup (agent speeds, timing and background motion) are
 always in the same split, so please use the splits as given.
 
-## Loading example
+## Getting started
 
 ```python
 import json
@@ -242,6 +152,7 @@ labels = pd.read_csv(f"{root}/{task}/labels.csv")
 cameras = json.load(open(f"{root}/{task}/cameras.json"))["cameras"]
 
 ep = episodes.iloc[0]
+ep_labels = labels[labels.episode_id == ep.episode_id]  # the labeled frames of this episode
 cap = cv2.VideoCapture(f"{root}/{task}/videos/{ep.episode_id}/cam0.mp4")
 frames = []
 while True:
@@ -249,18 +160,11 @@ while True:
     if not ok:
         break
     frames.append(image)  # 300 frames of 960 x 1280 x 3 (BGR)
-
-for row in labels[labels.episode_id == ep.episode_id].itertuples():
-    if row.label == -1:
-        continue  # boundary case, ignore
-    visible = frames[: row.frame + 1]  # frames a model may use for this decision
 ```
 
-## License
+## License and acknowledgements
 
 MCWS is released under the Creative Commons Attribution 4.0 International License (CC BY 4.0). See `LICENSE`.
-
-## Acknowledgements and third-party assets
 
 The videos were rendered with Gazebo (gz-sim). The dataset contains rendered videos only; it does not include any
 3D model files. The scenes use these third-party models:
@@ -273,7 +177,7 @@ The videos were rendered with Gazebo (gz-sim). The dataset contains rendered vid
 - Mobile robot: Gazebo Fuel model "Warehouse Robot" by Open Robotics
   (https://app.gazebosim.org/OpenRobotics/fuel/models/Warehouse%20Robot), CC0 1.0.
 
-## Citation
+## Citation and contact
 
 ```bibtex
 @misc{mcws,
@@ -284,6 +188,4 @@ The videos were rendered with Gazebo (gz-sim). The dataset contains rendered vid
 }
 ```
 
-## Contact
-
-For questions, please contact Chih-Yu Lin (wowlilo29@gmail.com) or open an issue at https://github.com/cylinomc/MCWS/issues.
+For questions, please contact Chih-Yu Lin (cylinomc@gmail.com) or open an issue at https://github.com/cylinomc/MCWS/issues.
