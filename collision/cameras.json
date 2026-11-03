@@ -1,0 +1,72 @@
+{
+  "cameras": [
+    {
+      "id": "cam0",
+      "position_m": [
+        -5.0,
+        -7.0,
+        11.0
+      ],
+      "yaw_rad": 0.7854,
+      "pitch_rad": 0.894,
+      "roll_rad": 0.0,
+      "horizontal_fov_deg": 100.0,
+      "resolution": [
+        1280,
+        960
+      ],
+      "fps": 20
+    },
+    {
+      "id": "cam1",
+      "position_m": [
+        8.2,
+        0.0,
+        3.4
+      ],
+      "yaw_rad": 3.1416,
+      "pitch_rad": 0.285,
+      "roll_rad": 0.0,
+      "horizontal_fov_deg": 60.0,
+      "resolution": [
+        1280,
+        960
+      ],
+      "fps": 20
+    },
+    {
+      "id": "cam2",
+      "position_m": [
+        0.3,
+        -8.5,
+        3.4
+      ],
+      "yaw_rad": 1.6057,
+      "pitch_rad": 0.295,
+      "roll_rad": 0.0,
+      "horizontal_fov_deg": 60.0,
+      "resolution": [
+        1280,
+        960
+      ],
+      "fps": 20
+    },
+    {
+      "id": "cam3",
+      "position_m": [
+        5.2,
+        -4.2,
+        5.2
+      ],
+      "yaw_rad": 2.462,
+      "pitch_rad": 0.6,
+      "roll_rad": 0.0,
+      "horizontal_fov_deg": 85.0,
+      "resolution": [
+        1280,
+        960
+      ],
+      "fps": 20
+    }
+  ]
+}
