@@ -24,6 +24,21 @@ In total the dataset has 5000 episodes and 20000 videos.
 </p>
 <p align="center"><em>Positive episodes of collision, intrusion and dropped box (one camera each, 7 to 12 s).</em></p>
 
+## Contents
+
+- [Download](#download)
+- [Episodes per task, category and split](#episodes-per-task-category-and-split)
+- [Videos](#videos)
+- [Folder layout](#folder-layout)
+- [labels.csv](#labelscsv)
+- [Tasks, categories and label rules](#tasks-categories-and-label-rules)
+- [cameras.json](#camerasjson)
+- [Splits](#splits)
+- [Loading example](#loading-example)
+- [License](#license)
+- [Acknowledgements and third-party assets](#acknowledgements-and-third-party-assets)
+- [Citation](#citation)
+
 ## Download
 
 The videos (about 14 GB) will be available for download soon. This repository holds the documentation.
@@ -65,7 +80,7 @@ The videos (about 14 GB) will be available for download soon. This repository ho
 
 - Four cameras per episode, `cam0` to `cam3`. Their placement is the same for every episode of a task and is
   given in the task's `cameras.json`.
-- H.264 MP4, 1280 x 960 pixels, 20 fps, 300 frames, 15.0 s, no audio.
+- H.264 MP4, 1280 x 960 pixels, 20 fps, 300 frames, 15.0 s.
 - The four videos of an episode are synchronized. Frame `i` (counting from 0) has presentation time `i / 20` s
   and shows the scene at that time. All times in this dataset are in these video seconds.
 - Each scene also contains background people or robots moving elsewhere in the warehouse. The labels concern only
