@@ -1,0 +1,15 @@
+Multi-Camera Warehouse Safety Dataset (MCWS)
+
+Copyright the MCWS authors.
+
+This dataset is licensed under the Creative Commons Attribution 4.0
+International License (CC BY 4.0).
+
+License deed: https://creativecommons.org/licenses/by/4.0/
+Legal code:   https://creativecommons.org/licenses/by/4.0/legalcode
+
+NOTICE: The videos are renders of third-party 3D models: AWS RoboMaker Small
+Warehouse World models (MIT-0), the Gazebo Fuel model "actor" by Mingfei
+(CC BY 4.0) and the Gazebo Fuel model "Warehouse Robot" by Open Robotics
+(CC0 1.0). No model files are included. See "Acknowledgements and third-party
+assets" in README.md.
