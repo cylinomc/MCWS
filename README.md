@@ -50,7 +50,31 @@ In total the dataset has 5000 episodes and 20000 videos.
 
 ## Download
 
-The videos (about 14 GB) will be available for download soon. This repository holds the documentation.
+This repository holds the documentation, the episode lists, the per-frame labels, the camera files and the
+splits. The videos are distributed as one zip archive per task:
+
+| Archive | Content | Size (bytes) | SHA-256 |
+| --- | --- | ---: | --- |
+| `MCWS_collision.zip` | Videos of `collision` | 3,874,299,162 | TBD |
+| `MCWS_intrusion.zip` | Videos of `intrusion` | 4,994,020,089 | TBD |
+| `MCWS_dropped_box.zip` | Videos of `dropped_box` | 5,306,910,954 | TBD |
+| `MCWS_docs_splits.zip` | `README.md`, `LICENSE`, `docs/tasks/`, `splits/`, as of commit `caacc78` of this repository | 22,644 | TBD |
+
+Download URL: TBD. The archives total 14,175,252,849 bytes (about 14.2 GB).
+
+To set up the dataset, clone this repository as `MCWS/` and unzip the video archives next to it:
+
+```bash
+git clone https://github.com/cylinomc/MCWS.git
+unzip MCWS_collision.zip
+unzip MCWS_intrusion.zip
+unzip MCWS_dropped_box.zip
+```
+
+<!-- TODO: confirm the paths inside the three video archives; only MCWS_docs_splits.zip has been checked. -->
+The result should match the [folder layout](#folder-layout), with the videos in `MCWS/<task>/videos/`.
+`MCWS_docs_splits.zip` unpacks to `MCWS/` and is only needed without this repository; it does not contain
+`episodes.csv`, `labels.csv` or `cameras.json`, which are in this repository.
 
 ## Tasks and categories
 
@@ -187,12 +211,17 @@ The videos were rendered with Gazebo (gz-sim). The dataset contains rendered vid
 
 ## Citation and contact
 
+If you use MCWS, please cite:
+
+<!-- TODO: fill in author, year and url when the paper and the download URL are final. -->
 ```bibtex
 @misc{mcws,
-  title  = {{MCWS}: Multi-Camera Warehouse Safety Dataset},
-  author = {TBD},
-  year   = {TBD},
-  note   = {TBD}
+  title        = {{MCWS}: Multi-Camera Warehouse Safety Dataset},
+  author       = {TBD},
+  year         = {TBD},
+  howpublished = {\url{TBD}},
+  note         = {Synthetic multi-camera video dataset with 5000 episodes and 20000 videos for three
+                  warehouse safety tasks (collision, intrusion, dropped box). License: CC BY 4.0}
 }
 ```
 
