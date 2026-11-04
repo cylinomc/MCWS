@@ -50,7 +50,60 @@ In total the dataset has 5000 episodes and 20000 videos.
 
 ## Download
 
-The videos (about 14 GB) will be available for download soon. This repository holds the documentation.
+The dataset has two parts:
+
+- **This repository** (https://github.com/cylinomc/MCWS): the documentation, the splits and, for each task,
+  `episodes.csv`, `labels.csv` and `cameras.json`.
+- **Four zip archives on Google Drive**: one with the videos of each task, and one with the documentation and the
+  splits.
+
+| Archive | Use | Size (bytes) | Link |
+| --- | --- | ---: | --- |
+| `MCWS_collision.zip` | Videos of the `collision` task | 3,874,299,162 | [Google Drive](https://drive.google.com/file/d/1v00vRZECax0rW1LvxK2MIW_yWjpYWfGx/view?usp=drivesdk) |
+| `MCWS_intrusion.zip` | Videos of the `intrusion` task | 4,994,020,089 | [Google Drive](https://drive.google.com/file/d/1WM4dfBYkKueMZkZndACnT2cOJHzcSC08/view?usp=drivesdk) |
+| `MCWS_dropped_box.zip` | Videos of the `dropped_box` task | 5,306,910,954 | [Google Drive](https://drive.google.com/file/d/1udD5WmEOAyRXb3Jr0M0o5KASrKzOA8-S/view?usp=drivesdk) |
+| `MCWS_docs_splits.zip` | `LICENSE`, `docs/tasks/` and `splits/`, plus an older `README.md` (see below) | 22,644 | [Google Drive](https://drive.google.com/file/d/135GT5Fmi9ekHDanyySLx-UiNamWfkEe2/view?usp=drivesdk) |
+
+You need only the archives of the tasks you use. The three video archives total 14,175,230,205 bytes (about
+14.2 GB). `MCWS_docs_splits.zip` does not contain `episodes.csv`, `labels.csv` or `cameras.json`; take these from
+this repository.
+
+`MCWS_docs_splits.zip` was built from commit `caacc78` of this repository. Its `LICENSE`, `docs/tasks/` and `splits/`
+are identical to the current ones; only its `README.md` is older (it has no download links
+or citation). The current `README.md` is the one in https://github.com/cylinomc/MCWS.
+SHA-256 checksums of the video archives are not published yet; the byte sizes above let you check that a download
+is complete.
+
+### Downloading in a web browser
+
+1. Open the Google Drive link of an archive. No Google account is needed.
+2. Click the download button. For files of this size Google Drive says it cannot scan the file for viruses; click
+   **Download anyway**.
+3. If Google Drive reports that the download quota is exceeded (too many downloads of the file in a short time),
+   try again later.
+4. Check that the size of the downloaded file matches the table above.
+
+### Unpacking
+
+Clone this repository and unzip the video archives next to the clone, so that the videos are added to the `MCWS/`
+folder:
+
+```bash
+git clone https://github.com/cylinomc/MCWS.git
+unzip MCWS_collision.zip
+unzip MCWS_intrusion.zip
+unzip MCWS_dropped_box.zip
+```
+
+`MCWS_intrusion.zip` and `MCWS_dropped_box.zip` are larger than 4 GiB; if the built-in unzip tool of your system
+fails on them, use a recent `unzip` or 7-Zip.
+After unpacking, the folders should follow the [folder layout](#folder-layout), with the videos in
+`MCWS/<task>/videos/<episode_id>/cam0.mp4` ... `cam3.mp4`; check with `ls MCWS/collision/videos | wc -l`, which
+should print 1250 (1750 for `intrusion`, 2000 for `dropped_box`).
+<!-- TODO: the paths inside the three video archives have not been checked yet; only MCWS_docs_splits.zip has. -->
+
+Without access to this repository, unzip `MCWS_docs_splits.zip` instead of cloning (it unpacks to `MCWS/` with the
+documentation and the splits), and follow this `README.md` rather than the older one in the archive.
 
 ## Tasks and categories
 
@@ -187,13 +240,19 @@ The videos were rendered with Gazebo (gz-sim). The dataset contains rendered vid
 
 ## Citation and contact
 
+If you use MCWS, please cite the dataset:
+
 ```bibtex
-@misc{mcws,
-  title  = {{MCWS}: Multi-Camera Warehouse Safety Dataset},
-  author = {TBD},
-  year   = {TBD},
-  note   = {TBD}
+@misc{lin2026mcws,
+  title        = {{MCWS}: Multi-Camera Warehouse Safety Dataset},
+  author       = {Chih-Yu Lin},
+  year         = {2026},
+  howpublished = {\url{https://github.com/cylinomc/MCWS}},
+  note         = {Synthetic multi-camera video dataset, 5000 episodes, 20000 videos, 3 tasks. License: CC BY 4.0}
 }
 ```
+
+In text: Chih-Yu Lin, *MCWS: Multi-Camera Warehouse Safety Dataset*, 2026, https://github.com/cylinomc/MCWS,
+licensed under CC BY 4.0.
 
 For questions, please contact Chih-Yu Lin (cylinomc@gmail.com) or open an issue at https://github.com/cylinomc/MCWS/issues.
